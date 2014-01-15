@@ -9,6 +9,7 @@
 #include <QAction>
 #include "notepad.h"
 #include <QMainWindow>
+#include <QtCore>
 
 Notepad::Notepad()
 {
@@ -30,7 +31,7 @@ Notepad::Notepad()
     textEdit = new QTextEdit;
     setCentralWidget(textEdit);
 
-    setWindowTitle(tr("Notepad"));
+    setWindowTitle(tr("Gandalf's Own Editor"));
 
 
 
@@ -58,10 +59,38 @@ void Notepad::quit()
 
 void Notepad::save()
 {
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save File"), "",
+       tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
+
+    if (fileName != "") {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            //error
+        } else {
+            QTextStream stream(&file);
+            stream << textEdit->toPlainText();
+            stream.flush();
+            file.close();
+        }
+
+    }
 
 }
 
 void Notepad::open()
 {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
+        tr("Text Files (*.txt);;C++ Files (*.cpp *.h)"));
 
+    if (fileName != "") {
+        QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+        return;
+    }
+
+    QTextStream in(&file);
+    textEdit->setText(in.readAll());
+    file.close();
+    }
 }
