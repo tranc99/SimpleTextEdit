@@ -8,17 +8,24 @@
  */
 #include <QtGui>
 
-class Notepad : public QWidget {
+class Notepad : public QMainWindow {
 	Q_OBJECT
 	
 public:
 	Notepad();
 	
 private slots:
+    void open();
+    void save();
 	void quit();
 	
 private:
 	QTextEdit *textEdit;
-	QPushButton *quitButton;
+
+    QAction *openAction;
+    QAction *saveAction;
+    QAction *exitAction;
+
+    QMenu *fileMenu;
 	
 };
